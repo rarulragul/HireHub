@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/venv/
+venv/
+ENV/
+env/
+*.sqlite3
+*.log
+
+# Media / Resumes
+media/resumes/
+media/*.pdf
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+.env
+backend/.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
