@@ -1,0 +1,74 @@
+# =============================================================================
+# HireHub – Render Deployment Configuration
+# render.yaml — defines both backend (Django) and frontend (React/Vite) services.
+#
+# IMPORTANT: Do NOT add secret values here.
+# Set all sensitive env vars (SECRET_KEY, DB_PASSWORD, etc.) via:
+#   Render Dashboard → Your Service → Environment → Add Environment Variable
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Backend – Django REST Framework (Python / Gunicorn)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: hirehub-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: bash build.sh
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --log-level info
+    plan: free
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        sync: false    # Set this manually in Render Dashboard — never commit it
+      - key: ALLOWED_HOSTS
+        sync: false    # e.g. hirehub-backend.onrender.com
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false    # e.g. https://hirehub-frontend.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false    # e.g. https://hirehub-backend.onrender.com
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: USE_SQLITE
+        value: "False"
+      - key: MEDIA_ROOT
+        value: /tmp/media   # For persistent uploads, add a Render Disk (see docs)
+      - key: MAX_RESUME_SIZE_MB
+        value: "5"
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+
+  # ---------------------------------------------------------------------------
+  # Frontend – React + Vite (Static Site)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: hirehub-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    plan: free
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      # React Router — redirect all 404s to index.html so client-side routing works
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false    # e.g. https://hirehub-backend.onrender.com/api
