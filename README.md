@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # HireHub – Python Full Stack Recruitment and Employee Management Portal
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
@@ -105,3 +106,6 @@ Result: `9 passed in 15.35s` (100% pass rate).
 | **Admin** | `admin@hirehub.com` | `AdminPassword123!` |
 | **Recruiter (Google)** | `recruiter@google.com` | `RecruiterPassword123!` |
 | **Candidate** | `alex.dev@gmail.com` | `CandidatePassword123!` |
+=======
+# HireHub
+>>>>>>> eef9a964ff18676c5119443afdf669f7f5a19f61
